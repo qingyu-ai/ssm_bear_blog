@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy.blog.dao.ArticleDao">
+
+    <!--根据id更新文章-->
+    <update id="editArticleById" parameterType="ArticleInfo">
+        update blog_article_info
+        <set>
+            <if test="top != null">
+                top = #{top},
+            </if>
+            <if test="banner != null">
+                banner = #{banner},
+            </if>
+            <if test="hot != null">
+                hot = #{hot},
+            </if>
+            <if test="title != null">
+                title = #{title},
+            </if>
+            <if test="summary != null">
+                summary = #{summary},
+            </if>
+            <if test="content != null">
+                content = #{content},
+            </if>
+        </set>
+        where id = #{id}
+    </update>
+
+    <!--根据文章id获取分类-->
+    <select id="findCategoryByArticleId" resultType="CategoryInfo">
+        select * from blog_category
+            where id
+  	    in (select category_id from blog_category_article where article_id=#{id})
+    </select>
+
+    <!--更新分类和文章id关联表-->
+    <update id="editArticleCategory" parameterType="ArticleInfo">
+        update blog_category_article
+        <set>
+            <if test="categoryId != null">
+                category_id = #{categoryId}
+            </if>
+        </set>
+        where article_id = #{id}
+    </update>
+
+    <!--根据id删除文章-->
+    <delete id="deleteArticleById" parameterType="int">
+    delete from blog_article_info where id = #{id}
+    </delete>
+
+    <!--根据id删除文章-->
+    <delete id="deleteArticleCategoryById" parameterType="int">
+    delete from blog_category_article where article_id = #{id}
+    </delete>
+
+    <!--新增文章-->
+    <insert id="addArticle" parameterType="ArticleInfo" useGeneratedKeys="true" keyProperty="id">
+        <selectKey resultType="java.lang.Integer" order="AFTER" keyProperty="id">
+            SELECT LAST_INSERT_ID()
+        </selectKey>
+        insert into blog_article_info(top,banner,hot,pubTime,title,summary,content)
+                      values
+        (#{top},#{banner},#{hot},#{pubTime},#{title},#{summary},#{content})
+    </insert>
+
+    <!--新增文章与分类关联信息-->
+    <insert id="addCategoryAndArticle" parameterType="ArticleInfo">
+        insert into blog_category_article(category_id,article_id)
+                      values
+        (#{categoryId},#{id})
+    </insert>
+
+</mapper>

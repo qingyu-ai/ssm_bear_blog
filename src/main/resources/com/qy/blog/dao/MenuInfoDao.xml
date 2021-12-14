@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy.blog.dao.MenuInfoDao">
+
+    <!--查询一级菜单-->
+    <select id="selectMenuInfo" resultType="MenuInfo">
+        select * from blog_menu_parent
+    </select>
+
+    <!--查询二级菜单-->
+    <select id="findByMenuId"
+            parameterType="int"
+            resultType="MenuInfo">
+        select  mc.*
+      		from blog_menu_children mc ,blog_menu_parent_children pc
+      		where mc.id = pc.children_id and pc.parent_id = #{id}
+    </select>
+
+</mapper>

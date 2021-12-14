@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qy.blog.dao.FrontPageInfoDao">
+
+    <!--获取博客首页文章列表信息-->
+    <select id="selectArticlesInfo" resultType="ArticleInfo">
+        select * from blog_article_info
+    </select>
+
+    <!--获取博客单篇文章内容-->
+    <select id="findArticleInfoById" resultType="ArticleInfo">
+        select * from blog_article_info where id = #{id}
+    </select>
+
+    <!--获取博客主页个人信息-->
+    <select id="selectSiteInfo" resultType="SiteInfo">
+        select * from blog_site
+    </select>
+
+    <!--获取首页个人社交信息-->
+    <select id="selectSocialInfo" resultType="SocialInfo">
+       select * from blog_social
+   </select>
+
+    <!--获取文章分类-->
+    <select id="selectCategoryInfo" resultType="CategoryInfo">
+       select * from blog_category
+   </select>
+
+    <!--获取分类下的文章-->
+    <select id="findArticleCategoryById" resultType="ArticleInfo">
+        select * from blog_article_info
+            where id
+  	    in (select article_id from blog_category_article where category_id=#{id})
+    </select>
+
+    <!--搜索文章-->
+    <select id="searchArticleByCondition" resultType="ArticleInfo">
+       select * from blog_article_info
+        where
+       upper(title) like upper(concat(concat("%",#{search}),"%"))
+   </select>
+
+    <!--获取文章数量-->
+    <select id="getArticleCount" resultType="integer">
+       select count(*) from blog_article_info
+   </select>
+
+    <!--获取文章分类数量-->
+    <select id="getCategoryCount" resultType="integer">
+       select count(*) from blog_category
+   </select>
+
+</mapper>
